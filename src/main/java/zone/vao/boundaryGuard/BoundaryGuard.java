@@ -9,9 +9,11 @@ import io.th0rgal.oraxen.api.OraxenFurniture;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import zone.vao.boundaryGuard.enums.CustomType;
 
 @Getter
-public class BoundaryGuard {
+public class BoundaryGuard implements Integration{
 
   private final Location location;
 
@@ -78,5 +80,25 @@ public class BoundaryGuard {
       return CustomType.ITEMS_ADDER;
     }
     return null;
+  }
+
+  @Override
+  public boolean canBuild(Player player) {
+    return false;
+  }
+
+  @Override
+  public boolean canBreak(Player player) {
+    return false;
+  }
+
+  @Override
+  public boolean canInteract(Player player) {
+    return false;
+  }
+
+  @Override
+  public boolean canUse(Player player) {
+    return false;
   }
 }

@@ -1,4 +1,4 @@
-package zone.vao.boundaryGuard;
+package zone.vao.boundaryGuard.enums;
 
 public enum CustomType {
   NEXO,

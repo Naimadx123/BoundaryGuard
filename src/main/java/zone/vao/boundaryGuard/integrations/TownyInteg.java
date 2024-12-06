@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import zone.vao.boundaryGuard.BoundaryGuard;
 import zone.vao.boundaryGuard.Integration;
-import zone.vao.boundaryGuard.IntegrationType;
+import zone.vao.boundaryGuard.enums.IntegrationType;
 
 
 @Getter

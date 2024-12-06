@@ -1,6 +1,5 @@
 package zone.vao.boundaryGuard;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public interface Integration {
