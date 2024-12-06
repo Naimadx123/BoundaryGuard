@@ -18,6 +18,7 @@ public class BoundaryGuard {
   public void init(JavaPlugin plugin) {
     loadIntegration("Towny", plugin, TownyIntg::new);
     loadIntegration("WorldGuard", plugin, WorldGuardIntg::new);
+    loadIntegration("PlotSquared", plugin, PlotSquaredIntg::new);
   }
 
   public boolean canBuild(Player player, Location location) {
