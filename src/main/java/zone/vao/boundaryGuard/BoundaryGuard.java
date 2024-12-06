@@ -1,104 +1,67 @@
 package zone.vao.boundaryGuard;
 
-import com.nexomc.nexo.api.NexoBlocks;
-import com.nexomc.nexo.api.NexoFurniture;
-import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.CustomEntity;
-import io.th0rgal.oraxen.api.OraxenBlocks;
-import io.th0rgal.oraxen.api.OraxenFurniture;
-import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import zone.vao.boundaryGuard.enums.CustomType;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import zone.vao.boundaryGuard.integrations.*;
 
-@Getter
-public class BoundaryGuard implements Integration{
+import java.util.ArrayList;
+import java.util.List;
 
-  private final Location location;
+public class BoundaryGuard {
 
-  public BoundaryGuard(Location location) {
-    this.location = location;
+  private final List<Integration> integrations = new ArrayList<>();
+  private static boolean debug = false;
 
+  public void init(JavaPlugin plugin) {
+    loadIntegration("Towny", plugin, TownyIntg::new);
+    loadIntegration("WorldGuard", plugin, WorldGuardIntg::new);
   }
 
-  /**
-   * Factory method to create a BoundaryGuard instance for a given location.
-   *
-   * @param location The location to guard.
-   * @return A new BoundaryGuard instance.
-   */
-  public static BoundaryGuard create(Location location) {
-    return new BoundaryGuard(location);
+  public boolean canBuild(Player player, Location location) {
+    return check(player, location,  Integration::canBuild);
   }
 
-
-  public static boolean isNexo(Location location) {
-
-    return NexoBlocks.isCustomBlock(location.getBlock()) ||
-        NexoFurniture.isFurniture(location);
+  public boolean canBreak(Player player, Location location) {
+    return check(player, location, Integration::canBreak);
   }
 
-  public static boolean isOraxen(Location location) {
-
-    return OraxenBlocks.isOraxenBlock(location.getBlock()) ||
-        OraxenFurniture.isFurniture(location.getBlock());
+  public boolean canInteract(Player player, Location location) {
+    return check(player, location, Integration::canInteract);
   }
 
-  public static boolean isItemsAdder(Location location) {
-    if (CustomBlock.byAlreadyPlaced(location.getBlock()) != null) {
-      return true;
-    }
-    for (Entity entity : location.getWorld().getNearbyEntities(location, 1, 1, 1)) {
-      if (CustomEntity.byAlreadySpawned(entity) != null) {
-        return true;
+  public boolean canUse(Player player, Location location) {
+    return check(player, location, Integration::canUse);
+  }
+
+  public void setDebug(boolean debugMode) {
+    debug = debugMode;
+  }
+
+  private boolean check(Player player, Location location, PermissionCheck check) {
+    return integrations.stream().allMatch(integration -> check.test(integration, player, location));
+  }
+
+  private void loadIntegration(String pluginName, JavaPlugin mainPlugin, IntegrationFactory factory) {
+    Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+    if (plugin != null && plugin.isEnabled()) {
+      try {
+        integrations.add(factory.create());
+      } catch (Exception e) {
+        if (debug) e.printStackTrace();
       }
     }
-    return false;
   }
 
-  public static boolean isItemsAdder(Entity entity) {
-
-    return CustomEntity.byAlreadySpawned(entity) != null ||
-        CustomBlock.byAlreadyPlaced(entity.getLocation().getBlock()) != null;
+  @FunctionalInterface
+  private interface PermissionCheck {
+    boolean test(Integration integration, Player player, Location location);
   }
 
-  /**
-   * Checks if the location contains a Custom block or furniture.
-   *
-   * @return CustomType if the location contains Custom content, null otherwise.
-   */
-  public static CustomType getType(Location location) {
-
-    if(isNexo(location)) {
-      return CustomType.NEXO;
-    }
-    if(isOraxen(location)) {
-      return CustomType.ORAXEN;
-    }
-    if(isItemsAdder(location)) {
-      return CustomType.ITEMS_ADDER;
-    }
-    return null;
-  }
-
-  @Override
-  public boolean canBuild(Player player) {
-    return false;
-  }
-
-  @Override
-  public boolean canBreak(Player player) {
-    return false;
-  }
-
-  @Override
-  public boolean canInteract(Player player) {
-    return false;
-  }
-
-  @Override
-  public boolean canUse(Player player) {
-    return false;
+  @FunctionalInterface
+  private interface IntegrationFactory {
+    Integration create();
   }
 }

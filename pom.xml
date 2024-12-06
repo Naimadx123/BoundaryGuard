@@ -63,6 +63,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>jitpack-repo</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>nexo-snapshots</id>
             <name>Nexo Repository</name>
             <url>https://repo.nexomc.com/snapshots</url>
@@ -71,10 +75,6 @@
             <id>oraxen</id>
             <name>Oraxen Repository</name>
             <url>https://repo.oraxen.com/releases</url>
-        </repository>
-        <repository>
-            <id>jitpack-repo</id>
-            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>glaremasters-repo</id>
