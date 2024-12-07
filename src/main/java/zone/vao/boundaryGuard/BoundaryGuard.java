@@ -22,7 +22,7 @@ public class BoundaryGuard {
   }
 
   public boolean canBuild(Player player, Location location) {
-    return check(player, location,  Integration::canBuild);
+    return check(player, location, Integration::canBuild);
   }
 
   public boolean canBreak(Player player, Location location) {
