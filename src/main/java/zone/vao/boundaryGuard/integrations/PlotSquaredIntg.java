@@ -1,51 +1,62 @@
 package zone.vao.boundaryGuard.integrations;
 
 import com.plotsquared.core.plot.Plot;
-import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import zone.vao.boundaryGuard.Integration;
 import zone.vao.boundaryGuard.enums.IntegrationType;
 
-@Getter
 public class PlotSquaredIntg implements Integration {
+  @Override
+  public IntegrationType getType() { return IntegrationType.PLOTSQUARED; }
 
-  IntegrationType type = IntegrationType.PLOTSQUARED;
-
+  public PlotSquaredIntg() {}
+  public PlotSquaredIntg(JavaPlugin owner, Plugin plugin) {}
 
   @Override
-  public boolean canBuild(Player player, Location location) {
-    return checkPermission(player, location, true);
+  public boolean canBuild(Player player, Location location) { return canModify(player, location); }
+
+  @Override
+  public boolean canBreak(Player player, Location location) { return canModify(player, location); }
+
+  @Override
+  public boolean canInteract(Player player, Location location) { return canModify(player, location); }
+
+  @Override
+  public boolean canInteract(Player player, Entity entity) {
+    return canModify(player, entity.getLocation());
   }
 
   @Override
-  public boolean canBreak(Player player, Location location) {
-    return checkPermission(player, location, false);
-  }
+  public boolean canUse(Player player, Location location) { return canModify(player, location); }
 
   @Override
-  public boolean canInteract(Player player, Location location) {
-    return checkPermission(player, location, true);
+  public boolean canDamage(Player player, Entity entity) {
+    Plot plot = getPlotFromLocation(entity.getLocation());
+    return plot == null || !plot.isDenied(player.getUniqueId());
   }
 
-  @Override
-  public boolean canUse(Player player, Location location) {
-    return checkPermission(player, location, true);
-  }
-
-  private boolean checkPermission(Player player, Location location, boolean allow) {
-    Plot plot = getPlotFromLocation(location);
-    return plot == null || (allow ? plot.isAdded(player.getUniqueId()) : !plot.isDenied(player.getUniqueId()));
+  private boolean canModify(Player player, Location location) {
+    var adapted = adaptBukkitLocation(location);
+    if (adapted == null) return false;
+    if (!adapted.isPlotArea()) return true;
+    Plot plot = Plot.getPlot(adapted);
+    if (plot == null) return player.hasPermission("plots.admin.build.road");
+    if (!plot.hasOwner()) return player.hasPermission("plots.admin.build.unowned");
+    return player.hasPermission("plots.admin.build.other")
+        || (!plot.isDenied(player.getUniqueId()) && plot.isAdded(player.getUniqueId()));
   }
 
   private Plot getPlotFromLocation(Location location) {
-    com.plotsquared.core.location.Location plotLoc = adaptBukkitLocation(location);
-    if (plotLoc == null) return null;
-    return Plot.getPlot(plotLoc);
+    var adapted = adaptBukkitLocation(location);
+    return adapted == null ? null : Plot.getPlot(adapted);
   }
 
   private com.plotsquared.core.location.Location adaptBukkitLocation(Location location) {
-    if (!location.isWorldLoaded()) return null;
+    if (location.getWorld() == null) return null;
     return com.plotsquared.core.location.Location.at(
         location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
   }
