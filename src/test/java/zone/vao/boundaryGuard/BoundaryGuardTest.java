@@ -29,6 +29,7 @@ class BoundaryGuardTest {
   private BoundaryGuard guard;
   private Player player;
   private Entity target;
+  private World world;
   private Location location;
 
   @BeforeEach
@@ -36,7 +37,8 @@ class BoundaryGuardTest {
     guard = new BoundaryGuard();
     player = mock(Player.class);
     target = mock(Entity.class);
-    location = new Location(mock(World.class), 10, 64, -20);
+    world = mock(World.class);
+    location = new Location(world, 10, 64, -20);
     when(target.getLocation()).thenReturn(location);
   }
 
@@ -49,6 +51,14 @@ class BoundaryGuardTest {
     when(integration.canUse(player, location)).thenReturn(allow);
     when(integration.canDamage(player, target)).thenReturn(allow);
     return integration;
+  }
+
+  @Test
+  void protectionChecksRemainValidAfterGarbageCollection() {
+    System.gc();
+    assertSame(world, location.getWorld());
+    assertTrue(guard.canBuild(player, location));
+    assertTrue(guard.checkBuild(player, location).allowed());
   }
 
   @Test

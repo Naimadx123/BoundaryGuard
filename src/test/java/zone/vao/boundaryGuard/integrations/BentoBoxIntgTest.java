@@ -26,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class BentoBoxIntgTest {
+  private final World interactionWorld = mock(World.class);
+
   static Stream<Arguments> entityInteractions() {
     return Stream.of(
         Arguments.of(ItemFrame.class, Flags.ITEM_FRAME),
@@ -41,7 +43,7 @@ class BentoBoxIntgTest {
     BentoBox plugin = mock(BentoBox.class, RETURNS_DEEP_STUBS);
     Player player = mock(Player.class);
     Entity entity = mock(type);
-    Location target = new Location(mock(World.class), 1, 65, 3);
+    Location target = new Location(interactionWorld, 1, 65, 3);
     when(entity.getLocation()).thenReturn(target);
     when(plugin.getIWM().inWorld(target)).thenReturn(true);
     Island island = mock(Island.class);
