@@ -18,6 +18,7 @@ public enum IntegrationType {
   HUSKTOWNS("HuskTowns", "HuskTownsIntg"),
   RESIDENCE("Residence", "ResidenceIntg"),
   NOBUILDPLUS("NoBuildPlus", "NoBuildPlusIntg"),
+  PROTECT("Protect", "ProtectIntg"),
   CUSTOM(null, null);
 
   private final String pluginName;

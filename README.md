@@ -5,7 +5,8 @@ entity interactions and damage checks. Requires Java 21 and Bukkit/Spigot/Paper
 1.20.4 or a compatible newer server.
 
 Supports WorldGuard, Towny, PlotSquared, FactionsUUID, Lands, CrashClaim,
-GriefPrevention, HuskClaims, HuskTowns, BentoBox, Residence and NoBuildPlus.
+GriefPrevention, HuskClaims, HuskTowns, BentoBox, Residence, NoBuildPlus and
+[Protect](https://thenextlvl.net/docs/protect).
 Protection plugin APIs are compile-only dependencies and are not bundled.
 
 ## Server setup
@@ -36,7 +37,7 @@ separately as a compile-only dependency.
 Add supported protection plugins to your plugin's `plugin.yml`:
 
 ```yaml
-softdepend: [WorldGuard, Towny, PlotSquared, Factions, Lands, CrashClaim, GriefPrevention, HuskClaims, HuskTowns, BentoBox, Residence, NoBuildPlus]
+softdepend: [WorldGuard, Towny, PlotSquared, Factions, Lands, CrashClaim, GriefPrevention, HuskClaims, HuskTowns, BentoBox, Residence, NoBuildPlus, Protect]
 ```
 
 ## Usage

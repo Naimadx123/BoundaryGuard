@@ -14,6 +14,7 @@ repositories {
     maven("https://ci.ender.zone/plugin/repository/everything/")
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://jitpack.io")
+    maven("https://repo.thenextlvl.net/releases")
 }
 
 dependencies {
@@ -28,9 +29,11 @@ dependencies {
     compileOnly("com.github.angeschossen:LandsAPI:7.10.13") { isTransitive = false }
     compileOnly("com.github.TechFortress:GriefPrevention:16.18") { isTransitive = false }
     compileOnly("world.bentobox:bentobox:2.0.0-SNAPSHOT") { isTransitive = false }
+    compileOnly("net.thenextlvl:protect:3.4.1") { isTransitive = false }
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testImplementation("org.mockito:mockito-core:5.20.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
+    testRuntimeOnly("net.thenextlvl:nbt:4.3.4") { isTransitive = false }
 }
 
 configurations.testImplementation {
