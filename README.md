@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation("zone.vao:BoundaryGuard:1.0.0")
+    implementation("zone.vao:BoundaryGuard:1.1.0")
 }
 ```
 
